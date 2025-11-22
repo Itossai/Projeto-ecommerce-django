@@ -4,12 +4,13 @@
 
 <head>
    {% include 'partials/_head.html'%}
-    <title>{% block titulo %}{% endblock%}Hello, world!</title>
+    <title>{% block titulo %}{% endblock%}Loja Online</title>
 </head>
 
 <body>
     {% include 'partials/_nav.html' %}
     <main class="container mt-4 mb-4">
+        {% include "partials/_messages.html" %}
         {% block conteudo %} {% endblock %}
     </main>
 
