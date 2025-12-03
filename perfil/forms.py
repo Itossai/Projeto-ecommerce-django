@@ -39,20 +39,21 @@ class UserForm(forms.ModelForm):
 
         usuario_data = cleaned.get('username')
         password_data =  cleaned.get('password')
-        password2_data = cleaned.get('passoword2')
+        password2_data = cleaned.get('password2')
         email_data = cleaned.get('email')
 
         usuario_db = User.objects.filter(username=usuario_data).first()
         email_db = User.objects.filter(email=email_data).first()
-
+        
         error_msg_user_exists = "Usuário já existe."
         error_msg_email_exists = "E-mail já existe."
         error_msg_password_match = "As senhas não coincidem."
-        password_short_msg = "A senha precisa de pelo ao menos 6 caracteres."
+        error_msg_short_password = "A senha precisa de pelo ao menos 6 caracteres."
+        erro_msg_required_field = "Este campo é obrigatório."
         # Usuarios Logados - Atualização
         if self.usuario:
-            if usuario_data != usuario_db:
-                if usuario_db:
+            if usuario_db:
+                if usuario_data != usuario_db.username:
                     validation_errors_msg["username"] = error_msg_user_exists
             
             if password_data:
@@ -60,13 +61,30 @@ class UserForm(forms.ModelForm):
                     validation_errors_msg["password"] = error_msg_password_match
                     validation_errors_msg["password2"] = error_msg_password_match
                 if len(password_data) < 6:
-                    validation_errors_msg["password"] = password_short_msg
-
-            if email_data != email_db:
-                validation_errors_msg["email"] = error_msg_email_exists
+                    validation_errors_msg["password"] = error_msg_short_password
+            if email_db:
+                
+                if email_data != email_db.email:
+                    validation_errors_msg["email"] = error_msg_email_exists
 
         #Usuarios não Logados - Cadastro
         else:
-            pass
+            if usuario_db:
+                    validation_errors_msg["username"] = error_msg_user_exists
+
+            if not password_data:
+                 validation_errors_msg["password"] = erro_msg_required_field
+            
+            if not password2_data:
+                 validation_errors_msg["password2"] = erro_msg_required_field
+            
+            if password_data != password2_data:
+                    validation_errors_msg["password"] = error_msg_password_match
+                    validation_errors_msg["password2"] = error_msg_password_match
+            if len(password_data) < 6:
+                    validation_errors_msg["password"] = error_msg_short_password
+
+            if email_db:
+                validation_errors_msg["email"] = error_msg_email_exists
         if validation_errors_msg:
             raise (forms.ValidationError(validation_errors_msg))

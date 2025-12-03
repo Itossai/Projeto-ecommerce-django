@@ -4,40 +4,38 @@ import re
 
 def validaCPF(cpf):
     cpf = str(cpf)
-    cpf_enviado_usuario = re.sub(
-        r'[^0-9]',
-        '',
-        cpf
-    )
+    cpf = re.sub(r'[^0-9]', '', cpf)
 
-    entrada_e_sequencial =  cpf ==  cpf[0] * len( cpf)
+    if not cpf or len(cpf) != 11:
+        return False
 
+    novo_cpf = cpf[:-2]                 # Elimina os dois últimos digitos do CPF
+    reverso = 10                        # Contador reverso
+    total = 0
 
-        
+    # Loop do CPF
+    for index in range(19):
+        if index > 8:                   # Primeiro índice vai de 0 a 9,
+            index -= 9                  # São os 9 primeiros digitos do CPF
 
-    nove_digitos = cpf_enviado_usuario[:9]
-    contador_regressivo_1 = 10
+        total += int(novo_cpf[index]) * reverso  # Valor total da multiplicação
 
-    resultado_digito_1 = 0
-    for digito in nove_digitos:
-        resultado_digito_1 += int(digito) * contador_regressivo_1
-        contador_regressivo_1 -= 1
-    digito_1 = (resultado_digito_1 * 10) % 11
-    digito_1 = digito_1 if digito_1 <= 9 else 0
+        reverso -= 1                    # Decrementa o contador reverso
+        if reverso < 2:
+            reverso = 11
+            d = 11 - (total % 11)
 
-    dez_digitos = nove_digitos + str(digito_1)
-    contador_regressivo_2 = 11
+            if d > 9:                   # Se o digito for > que 9 o valor é 0
+                d = 0
+            total = 0                   # Zera o total
+            novo_cpf += str(d)          # Concatena o digito gerado no novo cpf
 
-    resultado_digito_2 = 0
-    for digito in dez_digitos:
-        resultado_digito_2 += int(digito) * contador_regressivo_2
-        contador_regressivo_2 -= 1
-    digito_2 = (resultado_digito_2 * 10) % 11
-    digito_2 = digito_2 if digito_2 <= 9 else 0
+    # Evita sequencias. Ex.: 11111111111, 00000000000...
+    sequencia = novo_cpf == str(novo_cpf[0]) * len(cpf)
 
-    cpf_gerado_pelo_calculo = f'{nove_digitos}{digito_1}{digito_2}'
-
-    if cpf_enviado_usuario == cpf_gerado_pelo_calculo and not entrada_e_sequencial:
+    # Descobri que sequências avaliavam como verdadeiro, então também
+    # adicionei essa checagem aqui
+    if cpf == novo_cpf and not sequencia:
         return True
     else:
         return False
