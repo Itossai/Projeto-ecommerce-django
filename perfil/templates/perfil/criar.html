@@ -5,13 +5,33 @@
 
 <div class = "row">
     {% if not request.user.is_authenticated %}
-    <div class ="col-lg">
-        <h1> Login </h1>    
+    <div class ="col-lg mt-3">
+        <h3> Login </h3>   
+        <p> Se você já fez o cadastro basta entrar com seu usuário e senha abaixo.</p> 
+
+        <form method = "POST" action='{% url "perfil:login" %}'> 
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="InputUsuario1">Usuario</label>
+            <input type="text" name="username" class="form-control" placeholder="Digite seu usuário"
+            id="InputUsuario1" aria-describedby="usuariolHelp">
+            
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Senha</label>
+            <input type="password" name="password" class="form-control" 
+            placeholder="Digite sua senha"id="exampleInputPassword1">
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Entrar</button>
+        </form>
+
     </div>
     {% endif %}
-    <div class ="col-lg"> 
+    <div class ="col-lg mt-3"> 
         {% block titulocadastro %}
-        <h1> Cadastro </h1>
+        <h3> Cadastro </h3>
+        <p> Se caso não tenha cadastro,basta preencher o formulário a seguir.</p> 
         {% endblock titulocadastro %}
         <form method="POST" action="">
             {% csrf_token %}
