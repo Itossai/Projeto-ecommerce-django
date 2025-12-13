@@ -5,7 +5,7 @@ from django.views import View
 from django.http import HttpResponse
 from django.contrib import messages
 from . import models
-from pprint import pprint
+from perfil.models import Perfil
 # Create your views here.
 
 class ListaProdutos(ListView):
@@ -63,7 +63,7 @@ class AdicionarAoCarrinho(View):
         carrinho = self.request.session['carrinho']
         
         if variacao_id in carrinho:
-            # TODO : Variação já está presente no carrinho
+            
             quantidade_carrinho = carrinho[variacao_id]['quantidade']  
             quantidade_carrinho += 1   
 
@@ -78,7 +78,7 @@ class AdicionarAoCarrinho(View):
             carrinho[variacao_id]['preco_quantitativo_promocional'] = preco_unitario_promocional*quantidade_carrinho
             
         else:
-            # TODO : Não possui a variação no carrinho
+            
             carrinho[variacao_id]={
 
                     'produto_id':produto_id, 
@@ -145,6 +145,23 @@ class ResumoDaCompra(View):
 
         if not self.request.user.is_authenticated:
             return redirect('perfil:criar')
+
+        perfil = Perfil.objects.filter(usuario=self.request.user).exists()
+
+        if not perfil:
+            messages.error(
+                self.request,
+                "Usuário sem perfil. Por favor atualize seu cadastro."
+                )
+            return redirect('perfil:criar')
+
+        if not self.request.session.get('carrinho'):
+             messages.error(
+                self.request,
+                "Carrinho vazio."
+                )
+             return redirect('produto:lista')
+        
 
         contexto = {
             'usuario': self.request.user,
