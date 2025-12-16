@@ -31,11 +31,11 @@
             </div>
             <div class="col-lg mt-auto">
                 {% if request.user.is_authenticated %}
-                <a class="btn btn-lg btn-block btn-primary" href="{% url 'produto:resumodacompra.html' %}">
+                <a class="btn btn-lg btn-block btn-primary" href="{% url 'produto:resumodacompra' %}">
                     Comprar
                 </a>
                 {% else %}
-                <a class="btn btn-lg btn-block btn-primary" href="{% url 'perfil:criar.html' %}">
+                <a class="btn btn-lg btn-block btn-primary" href="{% url 'perfil:criar' %}">
                     Entrar ou cadastrar e comprar
                 </a>
                 {% endif %}
