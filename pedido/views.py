@@ -13,7 +13,7 @@ from utils import utils
 
 class DispatchLoginRequiredMixin(View):
     def dispatch(self,*args,**kwargs):
-        if not self.user.is_authenticated:
+        if not self.request.user.is_authenticated:
             return redirect('perfil:criar')
         return super().dispatch(*args,**kwargs)
 
@@ -54,7 +54,7 @@ class SalvarPedido(View):
         carrinho_variacao_ids = [v for v in carrinho]
 
         bd_variacoes =list(Variacao.objects.select_related('produto')
-                           .filter(id_in=carrinho_variacao_ids))
+                           .filter(id__in=carrinho_variacao_ids))
 
         for variacao in bd_variacoes:
             vid= str(variacao.id)
@@ -87,7 +87,7 @@ class SalvarPedido(View):
         pedido = Pedido(
             usuario = self.request.user,
             total = valor_total_carrinho,
-            qtd_total_carrinho = qtd_total_carrinho,
+            qtd_total = qtd_total_carrinho,
             status = 'C'
         )
 
@@ -122,12 +122,12 @@ class SalvarPedido(View):
 class Detalhe(DispatchLoginRequiredMixin,DetailView):
     model = Pedido
     context_object_name = 'pedido'
-    template_name = 'detalhe.html'
+    template_name = 'pedido/detalhe.html'
     pk_url_kwarg = 'pk'
 
 class Lista(DispatchLoginRequiredMixin,ListView):
     model = Pedido
     context_object_name = 'pedidos'
-    template_name = 'lista.html'
+    template_name = 'pedido/lista.html'
     paginate_by = 10
     ordering = ['-id']

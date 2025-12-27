@@ -125,7 +125,8 @@ class Criar(BasePerfil):
         return redirect('produto:carrinho')
 
 class Atualizar(View):
-    ...
+    def get(self,*args,**kwargs):
+        return redirect('perfil:criar') 
 
 class Login(View):
     def post(self, *args,**kwargs):
@@ -150,7 +151,7 @@ class Login(View):
                 self.request,
                 'Usuário e senha inválidos.'
             )
-            return redirect('pefil:criar')
+            return redirect('perfil:criar')
 
         login(self.request,user=usuario)
 
@@ -159,7 +160,7 @@ class Login(View):
             "Você fez login no sistema e pode concluir sua compra."
         )
 
-        return redirect('perfil:criar')
+        return redirect('produto:carrinho')
 
 
 class Logout(View):

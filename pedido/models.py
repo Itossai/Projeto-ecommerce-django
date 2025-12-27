@@ -33,6 +33,7 @@ class ItemPedido(models.Model):
     variacao_id = models.PositiveIntegerField()
     preco = models.FloatField()
     preco_promocional = models.FloatField(default=0)
+    quantidade = models.PositiveIntegerField()
     imagem = models.CharField(max_length=2000)
 
     def __str__(self):
