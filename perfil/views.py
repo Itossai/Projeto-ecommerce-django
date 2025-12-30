@@ -172,4 +172,4 @@ class Logout(View):
         self.request.session['carrinho'] = carrinho
         self.request.session.save()
 
-        return redirect('perfil:login')
+        return redirect('perfil:criar')
